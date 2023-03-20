@@ -1,0 +1,55 @@
+---
+title: "Untitled"
+author: "Trey"
+date: "2023-03-18"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+patern1 = "(\\[Book of \\w+( \\w+)?])"
+papers<-read_csv('/Users/luskenterprises/Consultme/kaleidoscope/data/WW_by_date_with_may.csv')
+papers =papers %>% mutate(book = str_extract(text, pattern = '(Book of (Psalms|Nephi|Mormon|Mormoon|Mormonto|Morm|Mathew|Joel|Jeremiah|Jer|Jacob|Isaiah|Genesis|Enoch|Doctrins|Doctrines|Doctrine|Deuteronomy|Covenents|Alma|Abraham|mormon))'))
+```
+```{r}
+papers =papers %>% mutate(book3 = str_extract(text, pattern = '((B|b)ook of \\w+)'))
+```
+
+
+```{r}
+papers =papers %>% mutate(prophet = str_extract(text, pattern = '\\w+ \\((OT|NT)\\)'))
+```
+
+
+```{r}
+# Creating People Column
+scriptures <- read_csv('/Users/luskenterprises/Consultme/kaleidoscope/data/lds-scriptures.csv')
+
+# Creating the list 
+books <- scriptures$book_title
+# creating one string
+book_string <- paste(books, collapse = "|")
+# Splitting it by one book
+franklin <-str_split(book_string,'\\|')
+# This unlisted it though im not sure it did anything
+carl <- franklin %>% unlist()
+# This creates unique list
+new <-unique(carl)
+# This extracts from the text all things that match any names in the list and put it into a new column
+papers$book2 <- sapply(str_extract_all(papers$text, paste(new, collapse = "|")), 
+                        paste, collapse = ", ")
+```
+```{r}
+looksie =papers%>% filter(!is.na(book)|!is.na(prophet))
+
+```
+
+```{r}
+try=papers%>% mutate(verse =str_extract(string=text, pattern='(((\\d+|\\w+)*?(st|rd|th)\\b)|\\d+)([A-Z a-z])+?[B|b]ook of \\w+'))
+```
+
+
+
